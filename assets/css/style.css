@@ -132,3 +132,36 @@ body.error-page h1 {
 body.error-page p {
   color: #8ea397;
 }
+
+/* Wallpapers */
+
+.wallpaper-gallery {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+.wallpaper img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid #244c3b;
+}
+
+.wallpaper p {
+  margin: 7px 0 0;
+  font-size: 14px;
+}
+
+.wallpaper-preview {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid #244c3b;
+}
+
+@media (max-width: 600px) {
+  .wallpaper-gallery {
+    grid-template-columns: 1fr;
+  }
+}
