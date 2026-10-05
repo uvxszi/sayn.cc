@@ -2,6 +2,8 @@
 layout: default
 ---
 
+{% assign sizes = site.data.wallpaper_sizes[page.wallpaper_id] %}
+
 <header>
   <h1>{{ page.title }}</h1>
 
@@ -23,28 +25,32 @@ layout: default
   <a
     href="/assets/wallpapers/originals/{{ page.file }}"
     download>
-    Original — {{ page.resolution }}
+    Original — {{ sizes.width }} × {{ sizes.height }}
   </a>
   <p>Original full-resolution file.</p>
 </div>
 
+{% if sizes.has_2560 %}
 <div class="entry">
   <a
     href="/assets/wallpapers/generated/{{ page.wallpaper_id }}-2560.png"
     download>
     2560px
   </a>
-  <p>Medium resolution.</p>
+  <p>Reduced resolution.</p>
 </div>
+{% endif %}
 
+{% if sizes.has_1920 %}
 <div class="entry">
   <a
     href="/assets/wallpapers/generated/{{ page.wallpaper_id }}-1920.png"
     download>
     1920px
   </a>
-  <p>Smaller resolution.</p>
+  <p>Reduced resolution.</p>
 </div>
+{% endif %}
 
 <p>
   <a href="/wallpapers/">← Back to wallpapers</a>
