@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="icon" href="/sayn-icon-color-1x1.ico">
+  <link rel="stylesheet" href="/assets/css/style.css">
+
+  <title>
+    {% if page.title == "Sayn" %}
+      Sayn
+    {% else %}
+      {{ page.title }} — Sayn
+    {% endif %}
+  </title>
+
+  <meta name="description" content="{{ page.description | default: site.description }}">
+
+  {% if page.robots %}
+    <meta name="robots" content="{{ page.robots }}">
+  {% else %}
+    <meta name="robots" content="index, follow">
+  {% endif %}
+
+  {% unless page.no_canonical %}
+    <link rel="canonical" href="{{ page.url | absolute_url }}">
+  {% endunless %}
+
+  <meta property="og:title" content="{{ page.title | default: site.title }}">
+  <meta property="og:description" content="{{ page.description | default: site.description }}">
+  <meta property="og:url" content="{{ page.url | absolute_url }}">
+  <meta property="og:type" content="website">
+</head>
+
+<body{% if page.body_class %} class="{{ page.body_class }}"{% endif %}>
+<main>
+
+  {% unless page.hide_nav %}
+    {% include nav.html %}
+  {% endunless %}
+
+  {{ content }}
+
+  {% unless page.hide_footer %}
+    {% include footer.html %}
+  {% endunless %}
+
+</main>
+</body>
+</html>
