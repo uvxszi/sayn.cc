@@ -133,35 +133,70 @@ body.error-page p {
   color: #8ea397;
 }
 
-/* Wallpapers */
+/* Gallery */
 
-.wallpaper-gallery {
+.gallery-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 24px;
 }
 
-.wallpaper img {
+.gallery-item img {
   display: block;
   width: 100%;
   height: auto;
   border: 1px solid #244c3b;
 }
 
-.wallpaper p {
+.gallery-item p {
   margin: 7px 0 0;
   font-size: 14px;
 }
 
-.wallpaper-preview {
+.gallery-preview {
   display: block;
   width: 100%;
   height: auto;
   border: 1px solid #244c3b;
 }
 
+.gallery-tags {
+  margin-top: 4px !important;
+  font-size: 12px !important;
+  color: #527764;
+}
+
+.gallery-tags a {
+  color: #527764;
+}
+
+.tag-list a {
+  display: inline-block;
+  margin: 0 12px 8px 0;
+}
+
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  margin-top: 40px;
+  border-top: 1px solid #244c3b;
+  padding-top: 15px;
+  font-size: 13px;
+}
+
 @media (max-width: 600px) {
-  .wallpaper-gallery {
+  .gallery-grid {
     grid-template-columns: 1fr;
+  }
+
+  .pagination {
+    display: block;
+  }
+
+  .pagination span,
+  .pagination a {
+    display: block;
+    margin-bottom: 8px;
   }
 }

@@ -7,9 +7,16 @@ baseurl: ""
 author: uvxszi
 
 collections:
-  wallpapers:
+  gallery:
     output: true
-    permalink: /wallpapers/:name/
+    permalink: /gallery/:name/
+
+defaults:
+  - scope:
+      path: ""
+      type: gallery
+    values:
+      layout: gallery-item
 
 exclude:
   - README.md

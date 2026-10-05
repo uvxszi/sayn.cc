@@ -1,0 +1,66 @@
+---
+layout: default
+title: Gallery
+description: Official Sayn desktop and mobile gallery.
+---
+
+<header>
+  <h1>Gallery</h1>
+
+  <p class="intro">
+    Official Sayn gallery. Select an image for full-resolution downloads.
+  </p>
+</header>
+
+<h2>Desktop</h2>
+
+<div class="gallery-gallery">
+
+{% assign desktop_gallery = site.gallery | where: "category", "desktop" %}
+
+{% for gallery in desktop_gallery %}
+
+  <div class="gallery">
+    <a href="{{ gallery.url }}">
+      <img
+        src="/assets/gallery/generated/{{ gallery.gallery_id }}-preview.webp"
+        alt="{{ gallery.alt }}"
+        loading="lazy">
+    </a>
+
+    <p>
+      <a href="{{ gallery.url }}">{{ gallery.title }}</a><br>
+      <span class="tag">{{ gallery.resolution }}</span>
+    </p>
+  </div>
+
+{% endfor %}
+
+</div>
+
+
+<h2>Mobile</h2>
+
+<div class="gallery-gallery">
+
+{% assign mobile_gallery = site.gallery | where: "category", "mobile" %}
+
+{% for gallery in mobile_gallery %}
+
+  <div class="gallery">
+    <a href="{{ gallery.url }}">
+      <img
+        src="/assets/gallery/generated/{{ gallery.gallery_id }}-preview.webp"
+        alt="{{ gallery.alt }}"
+        loading="lazy">
+    </a>
+
+    <p>
+      <a href="{{ gallery.url }}">{{ gallery.title }}</a><br>
+      <span class="tag">{{ gallery.resolution }}</span>
+    </p>
+  </div>
+
+{% endfor %}
+
+</div>

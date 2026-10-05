@@ -2,14 +2,15 @@
 
 set -euo pipefail
 
-ORIGINALS="assets/wallpapers/originals"
-GENERATED="assets/wallpapers/generated"
+ORIGINALS="assets/gallery/originals"
+GENERATED="assets/gallery/generated"
 DATA="_data"
 
+rm -rf "$GENERATED"
 mkdir -p "$GENERATED"
 mkdir -p "$DATA"
 
-MANIFEST="$DATA/wallpaper_sizes.yml"
+MANIFEST="$DATA/gallery_sizes.yml"
 
 echo "# Generated automatically. Do not edit." > "$MANIFEST"
 
@@ -21,8 +22,8 @@ else
     IDENTIFY="identify"
 fi
 
-# Convert bytes to decimal MB, e.g. 618492 -> 0.62
 file_size_mb() {
+    local bytes
     bytes=$(stat -c%s "$1")
     awk -v bytes="$bytes" 'BEGIN { printf "%.2f", bytes / 1000000 }'
 }
@@ -37,23 +38,29 @@ while IFS= read -r -d '' src; do
 
     width="$($IDENTIFY -format '%w' "$src")"
     height="$($IDENTIFY -format '%h' "$src")"
+    original_size="$(file_size_mb "$src")"
 
     echo "Processing $filename (${width}x${height})"
 
-    # Gallery preview
+    # Small gallery preview. Never upscale.
     "$IM" "$src" \
         -auto-orient \
-        -resize '960x960>' \
-        -quality 80 \
+        -resize '900x900>' \
+        -quality 82 \
         "$GENERATED/${name}-preview.webp"
 
     has_1920=false
     has_2560=false
 
     size_1920=""
-    size_2560=""
+    width_1920=""
+    height_1920=""
 
-    # Only create a 1920-class version if either dimension exceeds 1920.
+    size_2560=""
+    width_2560=""
+    height_2560=""
+
+    # 1920 maximum dimension version
     if [ "$width" -gt 1920 ] || [ "$height" -gt 1920 ]; then
         "$IM" "$src" \
             -auto-orient \
@@ -62,9 +69,11 @@ while IFS= read -r -d '' src; do
 
         has_1920=true
         size_1920="$(file_size_mb "$GENERATED/${name}-1920.png")"
+        width_1920="$($IDENTIFY -format '%w' "$GENERATED/${name}-1920.png")"
+        height_1920="$($IDENTIFY -format '%h' "$GENERATED/${name}-1920.png")"
     fi
 
-    # Only create a 2560-class version if either dimension exceeds 2560.
+    # 2560 maximum dimension version
     if [ "$width" -gt 2560 ] || [ "$height" -gt 2560 ]; then
         "$IM" "$src" \
             -auto-orient \
@@ -73,21 +82,25 @@ while IFS= read -r -d '' src; do
 
         has_2560=true
         size_2560="$(file_size_mb "$GENERATED/${name}-2560.png")"
+        width_2560="$($IDENTIFY -format '%w' "$GENERATED/${name}-2560.png")"
+        height_2560="$($IDENTIFY -format '%h' "$GENERATED/${name}-2560.png")"
     fi
 
-    original_size="$(file_size_mb "$src")"
-
     cat >> "$MANIFEST" <<EOF
-${name}:
+"${name}":
   width: ${width}
   height: ${height}
   original_size_mb: "${original_size}"
   has_1920: ${has_1920}
+  width_1920: "${width_1920}"
+  height_1920: "${height_1920}"
   size_1920_mb: "${size_1920}"
   has_2560: ${has_2560}
+  width_2560: "${width_2560}"
+  height_2560: "${height_2560}"
   size_2560_mb: "${size_2560}"
 EOF
 
 done
 
-echo "Wallpaper processing complete."
+echo "Gallery image processing complete."
