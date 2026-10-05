@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - dev
 
   workflow_dispatch:
 
@@ -50,6 +51,8 @@ jobs:
           path: ./_site
 
   deploy:
+    if: github.ref == 'refs/heads/main'
+
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
