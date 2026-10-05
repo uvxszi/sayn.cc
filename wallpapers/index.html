@@ -8,14 +8,59 @@ description: Official Sayn desktop and mobile wallpapers.
   <h1>Wallpapers</h1>
 
   <p class="intro">
-    Sayn wallpapers in their original resolution.
+    Official Sayn wallpapers. Select an image for full-resolution downloads.
   </p>
 </header>
 
 <h2>Desktop</h2>
 
-<p>Nothing here yet.</p>
+<div class="wallpaper-gallery">
+
+{% assign desktop_wallpapers = site.wallpapers | where: "category", "desktop" %}
+
+{% for wallpaper in desktop_wallpapers %}
+
+  <div class="wallpaper">
+    <a href="{{ wallpaper.url }}">
+      <img
+        src="/assets/wallpapers/generated/{{ wallpaper.wallpaper_id }}-preview.webp"
+        alt="{{ wallpaper.alt }}"
+        loading="lazy">
+    </a>
+
+    <p>
+      <a href="{{ wallpaper.url }}">{{ wallpaper.title }}</a><br>
+      <span class="tag">{{ wallpaper.resolution }}</span>
+    </p>
+  </div>
+
+{% endfor %}
+
+</div>
+
 
 <h2>Mobile</h2>
 
-<p>Nothing here yet.</p>
+<div class="wallpaper-gallery">
+
+{% assign mobile_wallpapers = site.wallpapers | where: "category", "mobile" %}
+
+{% for wallpaper in mobile_wallpapers %}
+
+  <div class="wallpaper">
+    <a href="{{ wallpaper.url }}">
+      <img
+        src="/assets/wallpapers/generated/{{ wallpaper.wallpaper_id }}-preview.webp"
+        alt="{{ wallpaper.alt }}"
+        loading="lazy">
+    </a>
+
+    <p>
+      <a href="{{ wallpaper.url }}">{{ wallpaper.title }}</a><br>
+      <span class="tag">{{ wallpaper.resolution }}</span>
+    </p>
+  </div>
+
+{% endfor %}
+
+</div>
