@@ -3,7 +3,10 @@ layout: null
 permalink: /sitemap.xml
 ---
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+<urlset
+  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 
 {% for p in site.pages %}
   {% unless p.url == "/sitemap.xml"
@@ -17,11 +20,14 @@ permalink: /sitemap.xml
 {% endfor %}
 
 {% for item in site.gallery %}
-  {% unless item.robots == "noindex" %}
   <url>
     <loc>{{ item.url | absolute_url | xml_escape }}</loc>
+
+    <image:image>
+      <image:loc>{{ site.url }}/assets/gallery/originals/{{ item.file | uri_escape }}</image:loc>
+    </image:image>
+
   </url>
-  {% endunless %}
 {% endfor %}
 
 </urlset>
