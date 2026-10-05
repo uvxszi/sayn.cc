@@ -1,0 +1,10 @@
+title: Sayn
+description: The official site for Sayn and Strange Encounters Sayn. Art, wallpapers, fiction, archives, projects and other material.
+
+url: "https://sayn.cc"
+baseurl: ""
+
+author: uvxszi
+
+exclude:
+  - README.md
