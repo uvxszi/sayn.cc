@@ -21,11 +21,11 @@ layout: default
 
 <div class="entry">
   <a
-    href="/assets/wallpapers/generated/{{ page.wallpaper_id }}-1920.png"
+    href="/assets/wallpapers/originals/{{ page.file }}"
     download>
-    1920px
+    Original — {{ page.resolution }}
   </a>
-  <p>Smaller resolution.</p>
+  <p>Original full-resolution file.</p>
 </div>
 
 <div class="entry">
@@ -39,11 +39,11 @@ layout: default
 
 <div class="entry">
   <a
-    href="/assets/wallpapers/originals/{{ page.file }}"
+    href="/assets/wallpapers/generated/{{ page.wallpaper_id }}-1920.png"
     download>
-    Original — {{ page.resolution }}
+    1920px
   </a>
-  <p>Original full-resolution file.</p>
+  <p>Smaller resolution.</p>
 </div>
 
 <p>
