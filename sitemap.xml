@@ -6,7 +6,10 @@ permalink: /sitemap.xml
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 {% for p in site.pages %}
-  {% unless p.url == "/sitemap.xml" or p.robots == "noindex" %}
+  {% unless p.url == "/sitemap.xml"
+    or p.url == "/robots.txt"
+    or p.url contains "/assets/"
+    or p.robots == "noindex" %}
   <url>
     <loc>{{ p.url | absolute_url | xml_escape }}</loc>
   </url>
