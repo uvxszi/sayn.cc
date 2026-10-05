@@ -4,13 +4,21 @@ set -euo pipefail
 
 ORIGINALS="assets/wallpapers/originals"
 GENERATED="assets/wallpapers/generated"
+DATA="_data"
 
 mkdir -p "$GENERATED"
+mkdir -p "$DATA"
+
+MANIFEST="$DATA/wallpaper_sizes.yml"
+
+echo "# Generated automatically. Do not edit." > "$MANIFEST"
 
 if command -v magick >/dev/null 2>&1; then
     IM="magick"
+    IDENTIFY="magick identify"
 else
     IM="convert"
+    IDENTIFY="identify"
 fi
 
 find "$ORIGINALS" -maxdepth 1 -type f \
@@ -21,30 +29,48 @@ while IFS= read -r -d '' src; do
     filename="$(basename "$src")"
     name="${filename%.*}"
 
-    echo "Processing $filename"
+    width="$($IDENTIFY -format '%w' "$src")"
+    height="$($IDENTIFY -format '%h' "$src")"
 
-    # Small, efficient gallery preview.
+    echo "Processing $filename (${width}x${height})"
+
+    # Gallery preview
     "$IM" "$src" \
         -auto-orient \
         -resize '960x960>' \
         -quality 80 \
         "$GENERATED/${name}-preview.webp"
 
-    # Smaller downloadable version.
-    # 4K landscape becomes 1920x1080.
-    # 4K portrait becomes 1080x1920.
-    "$IM" "$src" \
-        -auto-orient \
-        -resize '1920x1920>' \
-        "$GENERATED/${name}-1920.png"
+    has_1920=false
+    has_2560=false
 
-    # Medium downloadable version.
-    # 4K landscape becomes 2560x1440.
-    # 4K portrait becomes 1440x2560.
-    "$IM" "$src" \
-        -auto-orient \
-        -resize '2560x2560>' \
-        "$GENERATED/${name}-2560.png"
+    # Only create a 1920-class version if either dimension exceeds 1920.
+    if [ "$width" -gt 1920 ] || [ "$height" -gt 1920 ]; then
+        "$IM" "$src" \
+            -auto-orient \
+            -resize '1920x1920>' \
+            "$GENERATED/${name}-1920.png"
+
+        has_1920=true
+    fi
+
+    # Only create a 2560-class version if either dimension exceeds 2560.
+    if [ "$width" -gt 2560 ] || [ "$height" -gt 2560 ]; then
+        "$IM" "$src" \
+            -auto-orient \
+            -resize '2560x2560>' \
+            "$GENERATED/${name}-2560.png"
+
+        has_2560=true
+    fi
+
+    cat >> "$MANIFEST" <<EOF
+${name}:
+  width: ${width}
+  height: ${height}
+  has_1920: ${has_1920}
+  has_2560: ${has_2560}
+EOF
 
 done
 
