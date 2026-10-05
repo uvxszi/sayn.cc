@@ -1,0 +1,78 @@
+---
+layout: default
+---
+
+<header>
+    <h1>{{ page.title }}</h1>
+
+    <p class="intro">
+        {{ page.description }}
+    </p>
+</header>
+
+<h2>Tags</h2>
+
+<p class="tag-list">
+    <a href="/gallery/">all</a>
+
+    {% for tag in page.all_tags %}
+    <a href="/gallery/tags/{{ tag | slugify }}/">{{ tag }}</a>
+    {% endfor %}
+</p>
+
+<h2>Gallery</h2>
+
+<div class="gallery-grid">
+
+    {% for item in page.gallery_items %}
+
+    {% assign sizes = site.data.gallery_sizes[item.id] %}
+
+    <div class="gallery-item">
+
+        <a href="{{ item.url }}">
+            <img
+                    src="/assets/gallery/generated/{{ item.id }}-preview.webp"
+                    alt="{{ item.alt }}"
+                    loading="lazy">
+        </a>
+
+        <p>
+            <a href="{{ item.url }}">{{ item.title }}</a><br>
+
+            {% if sizes %}
+            <span class="tag">
+        {{ sizes.width }} × {{ sizes.height }}
+      </span>
+            {% endif %}
+        </p>
+
+        <p class="gallery-tags">
+            {% for tag in item.tags %}
+            <a href="/gallery/tags/{{ tag | slugify }}/">{{ tag }}</a>{% unless forloop.last %} · {% endunless %}
+            {% endfor %}
+        </p>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+{% if page.total_pages > 1 %}
+<p class="pagination">
+
+    {% if page.prev_url %}
+    <a href="{{ page.prev_url }}">← Previous</a>
+    {% endif %}
+
+    <span>
+    Page {{ page.page_number }} of {{ page.total_pages }}
+  </span>
+
+    {% if page.next_url %}
+    <a href="{{ page.next_url }}">Next →</a>
+    {% endif %}
+
+</p>
+{% endif %}

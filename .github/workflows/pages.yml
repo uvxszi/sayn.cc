@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - dev
 
   workflow_dispatch:
 
@@ -29,8 +30,11 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y imagemagick
 
-      - name: Generate wallpaper sizes
-        run: bash scripts/build-wallpapers.sh
+      - name: Generate gallery image files
+        run: bash scripts/build-gallery.sh
+
+      - name: Generate gallery pages
+        run: ruby scripts/generate-gallery.rb
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
@@ -47,6 +51,8 @@ jobs:
           path: ./_site
 
   deploy:
+    if: github.ref == 'refs/heads/main'
+
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

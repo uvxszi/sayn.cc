@@ -1,0 +1,61 @@
+---
+layout: default
+---
+
+{% assign id = page.file | split: "." | first %}
+{% assign sizes = site.data.gallery_sizes[id] %}
+
+<header>
+  <h1>{{ page.title }}</h1>
+
+  <p class="intro">
+    {{ page.description }}
+  </p>
+</header>
+
+<p>
+  <img
+          class="gallery-preview"
+          src="/assets/gallery/generated/{{ id }}-preview.webp"
+          alt="{{ page.alt }}">
+</p>
+
+{% if page.tags %}
+<p class="gallery-tags">
+  Tags:
+  {% for tag in page.tags %}
+  <a href="/gallery/tags/{{ tag | slugify }}/">{{ tag }}</a>{% unless forloop.last %} · {% endunless %}
+  {% endfor %}
+</p>
+{% endif %}
+
+<h2>Downloads</h2>
+
+<div class="entry">
+  <a href="/assets/gallery/originals/{{ page.file }}" download>
+    Original — {{ sizes.width }} × {{ sizes.height }} ({{ sizes.original_size_mb }} MB)
+  </a>
+  <p>Original full-resolution file.</p>
+</div>
+
+{% if sizes.has_2560 %}
+<div class="entry">
+  <a href="/assets/gallery/generated/{{ id }}-2560.png" download>
+    {{ sizes.width_2560 }} × {{ sizes.height_2560 }} ({{ sizes.size_2560_mb }} MB)
+  </a>
+  <p>Reduced resolution.</p>
+</div>
+{% endif %}
+
+{% if sizes.has_1920 %}
+<div class="entry">
+  <a href="/assets/gallery/generated/{{ id }}-1920.png" download>
+    {{ sizes.width_1920 }} × {{ sizes.height_1920 }} ({{ sizes.size_1920_mb }} MB)
+  </a>
+  <p>Reduced resolution.</p>
+</div>
+{% endif %}
+
+<p>
+  <a href="/gallery/">← Back to gallery</a>
+</p>
