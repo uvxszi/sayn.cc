@@ -19,34 +19,38 @@ layout: default
     alt="{{ page.alt }}">
 </p>
 
+<!-- DOWNLOAD OPTIONS -->
 <h2>Downloads</h2>
 
+<!-- ORIGINAL RESOLUTION -->
 <div class="entry">
   <a
     href="/assets/wallpapers/originals/{{ page.file }}"
     download>
-    Original — {{ sizes.width }} × {{ sizes.height }}
+    Original — {{ sizes.width }} × {{ sizes.height }} ({{ sizes.original_size_mb }} MB)
   </a>
   <p>Original full-resolution file.</p>
 </div>
 
+<!-- 2560px -->
 {% if sizes.has_2560 %}
 <div class="entry">
   <a
     href="/assets/wallpapers/generated/{{ page.wallpaper_id }}-2560.png"
     download>
-    2560px
+    2560px ({{ sizes.size_2560_mb }} MB)
   </a>
   <p>Reduced resolution.</p>
 </div>
 {% endif %}
 
+<!-- 1920px -->
 {% if sizes.has_1920 %}
 <div class="entry">
   <a
     href="/assets/wallpapers/generated/{{ page.wallpaper_id }}-1920.png"
     download>
-    1920px
+    1920px ({{ sizes.size_1920_mb }} MB)
   </a>
   <p>Reduced resolution.</p>
 </div>
