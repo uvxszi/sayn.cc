@@ -6,5 +6,11 @@ baseurl: ""
 
 author: uvxszi
 
+collections:
+  wallpapers:
+    output: true
+    permalink: /wallpapers/:name/
+
 exclude:
   - README.md
+  - scripts
