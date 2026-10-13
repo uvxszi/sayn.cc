@@ -1,5 +1,8 @@
 name: Build and deploy sayn.cc
 
+# Every push builds the site. Pushes to main also publish it and then tell IndexNow
+# which pages changed. Pushes to dev only build, as a check.
+
 on:
   push:
     branches:
@@ -21,9 +24,14 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    outputs:
+      changed: ${{ steps.changed.outputs.urls }}
+
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0 # full history, so the sitemap can date each page by its last commit
 
       - name: Install ImageMagick
         run: |
@@ -33,20 +41,23 @@ jobs:
       - name: Generate gallery image files
         run: bash scripts/build-gallery.sh
 
-      - name: Generate gallery pages
-        run: ruby scripts/generate-gallery.rb
+      - name: Build the site
+        run: node scripts/build.js --require-images
+
+      - name: Find pages that differ from the live site
+        id: changed
+        run: |
+          {
+            echo "urls<<END_OF_URLS"
+            node scripts/indexnow.js changed || true
+            echo "END_OF_URLS"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Configure GitHub Pages
-        uses: actions/configure-pages@v5
-
-      - name: Build Jekyll
-        uses: actions/jekyll-build-pages@v1
-        with:
-          source: ./
-          destination: ./_site
+        uses: actions/configure-pages@v6
 
       - name: Upload site
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: ./_site
 
@@ -63,4 +74,19 @@ jobs:
     steps:
       - name: Deploy
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
+
+  indexnow:
+    if: github.ref == 'refs/heads/main'
+
+    runs-on: ubuntu-latest
+    needs: [build, deploy]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Submit changed pages
+        env:
+          URLS: ${{ needs.build.outputs.changed }}
+        run: node scripts/indexnow.js submit

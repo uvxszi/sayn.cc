@@ -1,18 +1,20 @@
 #!/usr/bin/env bash
 
+# Makes the preview and the smaller download sizes of every gallery image (needs ImageMagick),
+# and records their dimensions in sizes.ndjson for scripts/build.js. Run before the build on GitHub.
+
 set -euo pipefail
 
 ORIGINALS="assets/gallery/originals"
 GENERATED="assets/gallery/generated"
-DATA="_data"
 
 rm -rf "$GENERATED"
 mkdir -p "$GENERATED"
-mkdir -p "$DATA"
 
-MANIFEST="$DATA/gallery_sizes.yml"
+# One line of JSON per image.
+MANIFEST="$GENERATED/sizes.ndjson"
 
-echo "# Generated automatically. Do not edit." > "$MANIFEST"
+: > "$MANIFEST"
 
 if command -v magick >/dev/null 2>&1; then
     IM="magick"
@@ -38,7 +40,6 @@ while IFS= read -r -d '' src; do
 
     width="$($IDENTIFY -format '%w' "$src")"
     height="$($IDENTIFY -format '%h' "$src")"
-    original_size="$(file_size_mb "$src")"
 
     echo "Processing $filename (${width}x${height})"
 
@@ -48,6 +49,9 @@ while IFS= read -r -d '' src; do
         -resize '900x900>' \
         -quality 82 \
         "$GENERATED/${name}-preview.webp"
+
+    preview_width="$($IDENTIFY -format '%w' "$GENERATED/${name}-preview.webp")"
+    preview_height="$($IDENTIFY -format '%h' "$GENERATED/${name}-preview.webp")"
 
     has_1920=false
     has_2560=false
@@ -86,20 +90,11 @@ while IFS= read -r -d '' src; do
         height_2560="$($IDENTIFY -format '%h' "$GENERATED/${name}-2560.png")"
     fi
 
-    cat >> "$MANIFEST" <<EOF
-"${name}":
-  width: ${width}
-  height: ${height}
-  original_size_mb: "${original_size}"
-  has_1920: ${has_1920}
-  width_1920: "${width_1920}"
-  height_1920: "${height_1920}"
-  size_1920_mb: "${size_1920}"
-  has_2560: ${has_2560}
-  width_2560: "${width_2560}"
-  height_2560: "${height_2560}"
-  size_2560_mb: "${size_2560}"
-EOF
+    printf '{"id":"%s","width":%s,"height":%s,"preview_width":%s,"preview_height":%s,"has_1920":%s,"width_1920":"%s","height_1920":"%s","size_1920_mb":"%s","has_2560":%s,"width_2560":"%s","height_2560":"%s","size_2560_mb":"%s"}\n' \
+        "$name" "$width" "$height" "$preview_width" "$preview_height" \
+        "$has_1920" "$width_1920" "$height_1920" "$size_1920" \
+        "$has_2560" "$width_2560" "$height_2560" "$size_2560" \
+        >> "$MANIFEST"
 
 done
 
